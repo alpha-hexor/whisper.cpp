@@ -1,16 +1,19 @@
 name: "Android build"
 on:
   push:
-    paths:
-      - examples/whisper.android/**
+    branches:
+      - master
 
 jobs:
-  build:
+  android-apk-build:
     name: Building android apk
     runs-on: ubuntu-latest
     steps:
       - name: Clone the current repo
         uses: actions/checkout@v3
+        with:
+          path: whisper
+      
       - name: Dependecies
         run: |
           sudo apt-get update
@@ -18,14 +21,28 @@ jobs:
           sudo apt-get install cmake
           sudo apt-get install libsdl2-dev
 
-      - name: Set up jdk 17
+      - name: Install Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: "gradle"
+          distribution: zulu
+          java-version: 21
           
-      - name: Show ls
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Installing model
         run: |
-          echo "Directory listing"
-          ls -la
+          cd whisper/examples/whisper.android
+          mkdir -p app/src/main/assets/models
+          cd app/src/main/assets/models
+          curl -L --output ggml-base.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin
+
+      - name: Build
+        run: |
+          cd whisper/examples/whisper.android
+          ./gradlew assembleRelease --no-daemon
+          
+      - name: Upload to artifactory
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: whisper/examples/whisper.android/app/build/outputs/apk/release
