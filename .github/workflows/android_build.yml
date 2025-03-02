@@ -24,27 +24,21 @@ jobs:
         
       - name: Installing model
         run: |
-          cd whisper/examples/whisper.android.java
+          cd examples/whisper.android.java
           mkdir -p app/src/main/assets/models
           cd app/src/main/assets/models
           curl -L --output ggml-tiny.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin
 
       - name: Getting a sample
         run: |
-          cd whisper/examples/whisper.android.java
+          cd examples/whisper.android.java
           mkdir -p app/src/main/assets/samples
           cd app/src/main/assets/samples
           curl -O -L https://github.com/ggerganov/whisper.cpp/raw/master/samples/jfk.wav
           
       - name: Build
         run: |
-          cd whisper/examples/whisper.android.java
-          ./gradlew assembleRelease --no-daemon
-
-      - name: Build with external ggml
-        run: |
-          export PATH_TO_GGML=$PWD/ggml
-          cd whisper/examples/whisper.android.java
+          cd examples/whisper.android.java
           ./gradlew assembleRelease --no-daemon
           
       - name: Upload to artifactory
