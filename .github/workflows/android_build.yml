@@ -14,13 +14,6 @@ jobs:
         with:
           path: whisper
       
-      - name: Dependecies
-        run: |
-          sudo apt-get update
-          sudo apt-get install build-essential git
-          sudo apt-get install cmake
-          sudo apt-get install libsdl2-dev
-
       - name: Install Java
         uses: actions/setup-java@v4
         with:
@@ -34,7 +27,7 @@ jobs:
           cd whisper/examples/whisper.android
           mkdir -p app/src/main/assets/models
           cd app/src/main/assets/models
-          curl -L --output ggml-base.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin
+          curl -L --output ggml-tiny.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin
 
       - name: Build
         run: |
